@@ -1,4 +1,4 @@
-﻿@page "{id:int}"
+﻿@page "{id:int?}"
 @model DeLaSalle.Ecommerce.WebApplication.Pages.Brand.EditModel
 @{
 }
@@ -16,9 +16,16 @@
             <div class="col-md-1"></div>
             <div class="col-md-10">
                 <h1>Editing @Model.Marca.Name </h1>
-                @if (ModelState.ErrorCount > 0)
+                @if (Model.Errors.Count > 0)
                 {
-
+                    <div class="alert alert-danger" role="alert">
+                        <ul>
+                            @foreach (var error in Model.Errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    </div>
                 }
                 <div class="form-group">
                     <label asp-for="Marca.Id"></label>
@@ -37,12 +44,12 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12 text-right">
+                        <br />
                         <button type="submit" class="btn btn-primary">Guardar</button>
-                        <button type="reset" class="btn btn-secondary">Cancelar</button>
+                        <a class="btn btn-secondary" asp-page="/Brand/List">Cancelar</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-1"></div>
         </div>
     </form>
 </div>

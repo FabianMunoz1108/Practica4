@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DeLaSalle.Ecommerce.Api.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ProductCategoriesController : ControllerBase
     {
-        private IProductCategoryService _service;
+        private readonly IProductCategoryService _service;
 
         public ProductCategoriesController(IProductCategoryService service)
         {
@@ -19,7 +19,7 @@ namespace DeLaSalle.Ecommerce.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Response<List<ProductCategoryDto>>>> Get()
+        public async Task<ActionResult<Response<List<ProductCategoryDto>>>> GetAll()
         {
             var res = new Response<List<ProductCategoryDto>>()
             {
@@ -28,11 +28,11 @@ namespace DeLaSalle.Ecommerce.Api.Controllers
             return Ok(res);
         }
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Response<ProductCategoryDto>>> Get(int id)
+        public async Task<ActionResult<Response<ProductCategoryDto>>> GetById(int id)
         {
             var res = new Response<ProductCategoryDto>();
 
-            if (!await _service.ProductCategoryExists(id))
+            if (!await _service.ProductCategoryExist(id))
             {
                 res.Errors.Add("No encontrado");
                 return NotFound(res);
@@ -44,10 +44,14 @@ namespace DeLaSalle.Ecommerce.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Response<ProductCategoryDto>>> Post([FromBody] ProductCategoryDto categoryDto)
         {
-            var res = new Response<ProductCategoryDto>()
+            var res = new Response<ProductCategoryDto>();
+
+            if (await _service.ExistByName(categoryDto.Name))
             {
-                Data = await _service.SaveAsync(categoryDto)
-            };
+                res.Errors.Add($"Producto con nombre {categoryDto.Name} ya existe");
+            }
+            res.Data = await _service.SaveAsync(categoryDto);
+
             return CreatedAtAction("Get", new { id = res.Data.Id }, res);
         }
         [HttpDelete("{id:int}")]
@@ -64,10 +68,16 @@ namespace DeLaSalle.Ecommerce.Api.Controllers
         {
             var response = new Response<ProductCategoryDto>();
 
-            if (!await _service.ProductCategoryExists(dto.Id))
+            if (!await _service.ProductCategoryExist(dto.Id))
             {
-                response.Errors.Add("No existe");
+                response.Errors.Add("Product Category Not Found");
                 return NotFound(response);
+            }
+
+            if (await _service.ExistByName(dto.Name, dto.Id))
+            {
+                response.Errors.Add($"Product Category name {dto.Name} already exists");
+                return BadRequest(response);
             }
             response.Data = await _service.UpdateAsync(dto);
             return Ok(response);

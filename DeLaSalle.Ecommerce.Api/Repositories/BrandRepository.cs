@@ -2,6 +2,7 @@
 using Dapper.Contrib.Extensions;
 using DeLaSalle.Ecommerce.Api.DataAccess.Interfaces;
 using DeLaSalle.Ecommerce.Api.Repositories.Interfaces;
+using DeLaSalle.Ecommerce.Core.Dto;
 using DeLaSalle.Ecommerce.Core.Entities;
 
 namespace DeLaSalle.Ecommerce.Api.Repositories
@@ -91,6 +92,12 @@ namespace DeLaSalle.Ecommerce.Api.Repositories
                 brand.Id = 0;
             }
             return brand;
+        }
+        public async Task<Brand?> GetByNameAsync(string name, int id)
+        {
+            var sql = $"SELECT * FROM `brand` WHERE IsDeleted = 0 AND Name = '{name}' AND Id <> {id}";
+            var marcas = await _context.Connection.QueryAsync<Brand>(sql);
+            return marcas.ToList().FirstOrDefault();
         }
         #endregion
     }

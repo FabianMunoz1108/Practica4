@@ -1,4 +1,5 @@
-﻿using DeLaSalle.Ecommerce.Api.Repositories.Interfaces;
+﻿using DeLaSalle.Ecommerce.Api.Repositories;
+using DeLaSalle.Ecommerce.Api.Repositories.Interfaces;
 using DeLaSalle.Ecommerce.Api.Services.Interfaces;
 using DeLaSalle.Ecommerce.Core.Dto;
 using DeLaSalle.Ecommerce.Core.Entities;
@@ -37,7 +38,7 @@ namespace DeLaSalle.Ecommerce.Api.Services
 
         }
 
-        public async Task<bool> ProductCategoryExists(int id)
+        public async Task<bool> ProductCategoryExist(int id)
         {
             var category = await _repository.GetById(id);
             return category != null;
@@ -71,6 +72,12 @@ namespace DeLaSalle.Ecommerce.Api.Services
 
             await _repository.UpdateAsync(cat);
             return categoryDto;
+        }
+        public async Task<bool> ExistByName(string name, int id = 0)
+        {
+            var category = await _repository.GetByName(name, id);
+
+            return category != null;
         }
     }
 }

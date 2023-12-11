@@ -1,4 +1,5 @@
-﻿using DeLaSalle.Ecommerce.Api.Repositories.Interfaces;
+﻿using DeLaSalle.Ecommerce.Api.Repositories;
+using DeLaSalle.Ecommerce.Api.Repositories.Interfaces;
 using DeLaSalle.Ecommerce.Api.Services.Interfaces;
 using DeLaSalle.Ecommerce.Core.Dto;
 using DeLaSalle.Ecommerce.Core.Entities;
@@ -13,10 +14,20 @@ namespace DeLaSalle.Ecommerce.Api.Services
         {
             _repository = repository;
         }
-
+        public async Task<bool> BrandExistAsync(int id)
+        {
+            var marca = await _repository.GetByIdAsync(id);
+            return (marca != null);
+        }
         public async Task<bool> DeleteAsync(int id)
         {
             return await _repository.DeleteAsync(id);
+        }
+
+        public async Task<bool> ExistByNameAsync(string name, int id = 0)
+        {
+            var marca = await _repository.GetByNameAsync(name, id);
+            return marca != null;
         }
 
         public async Task<List<BrandDto>?> GetAllAsync()

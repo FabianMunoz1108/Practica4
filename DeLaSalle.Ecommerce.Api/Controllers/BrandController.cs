@@ -10,7 +10,7 @@ namespace DeLaSalle.Ecommerce.Api.Controllers
     /// <summary>
     /// Proporciona los métodos para la gestión de marcas
     /// </summary>
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class BrandController : Controller
@@ -61,14 +61,12 @@ namespace DeLaSalle.Ecommerce.Api.Controllers
         public async Task<ActionResult<Response<BrandDto>>> GetBrand(int id)
         {
             var res = new Response<BrandDto>();
-            var brand = await _service.GetByIdAsync(id);
-
-            if (brand != null)
+            if (!await _service.BrandExistAsync(id))
             {
-                res.Data = brand;
-                return Ok(res);
+                res.Errors.Add("La marca no existe");
+                return NotFound(res);
             }
-            res.Errors.Add("Marca no encontrada!");
+            res.Data = await _service.GetByIdAsync(id);
             return NotFound(res);
         }
         /// <summary>
@@ -78,10 +76,16 @@ namespace DeLaSalle.Ecommerce.Api.Controllers
         /// <returns>Datos de la marca creada</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Response<BrandDto>>> PostBrand([FromBody] BrandDto dto)
         {
             var res = new Response<BrandDto>();
+            if (await _service.ExistByNameAsync(dto.Name))
+            {
+                res.Errors.Add($"El nombre de la marca {dto.Name} ya existe");
+                return BadRequest(res);
+            }
             dto = await _service.SaveAsync(dto);
             res.Data = dto;
 
@@ -93,20 +97,25 @@ namespace DeLaSalle.Ecommerce.Api.Controllers
         /// <param name="dto">Datos a actualizar</param>
         /// <returns>Respuesta vacía en caso de actualización exitosa</returns>
         [HttpPut]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Response<BrandDto>>> PutBrand([FromBody] BrandDto dto)
         {
             var res = new Response<BrandDto>();
-            dto = await _service.UpdateAsync(dto);
-            /*Si dentro del método se cambió el Id a 0, es para indicar que el registro no existe o ya está eliminado*/
-            if (dto.Id == 0)
+            if (!await _service.BrandExistAsync(dto.Id))
             {
-                res.Data = dto;
-                return NotFound();
+                res.Errors.Add("El nombre de la marca no existe");
+                return NotFound(res);
             }
-            return NoContent();
+            if (await _service.ExistByNameAsync(dto.Name, dto.Id))
+            {
+                res.Errors.Add("El nombre de la marca ya existe");
+                return BadRequest(res);
+            }
+            res.Data = await _service.UpdateAsync(dto);
+            return Ok(res);
         }
         /// <summary>
         /// Realiza borrado lógico de la marca solicitada
@@ -127,6 +136,7 @@ namespace DeLaSalle.Ecommerce.Api.Controllers
             {
                 return Ok(res);
             }
+            res.Errors.Add("La marca no existe o ya se ha eliminado");
             return NotFound(res);
         }
         #endregion

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
+using DeLaSalle.Ecommerce.Api.DataAccess;
 using DeLaSalle.Ecommerce.Api.DataAccess.Interfaces;
 using DeLaSalle.Ecommerce.Api.Repositories.Interfaces;
 using DeLaSalle.Ecommerce.Core.Entities;
@@ -44,6 +45,13 @@ namespace DeLaSalle.Ecommerce.Api.Repositories
         {
             await _context.Connection.UpdateAsync(category);
             return category;
+        }
+        public async Task<ProductCategory> GetByName(string name, int id = 0)
+        {
+            var sql = $"SELECT *  FROM ProductCategory WHERE Name = '{name}' AND Id <> {id} ";
+            var categories =
+                await _context.Connection.QueryAsync<ProductCategory>(sql);
+            return categories.ToList().FirstOrDefault();
         }
     }
 }

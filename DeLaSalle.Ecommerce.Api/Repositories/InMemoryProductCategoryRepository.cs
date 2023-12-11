@@ -27,6 +27,11 @@ namespace DeLaSalle.Ecommerce.Api.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<ProductCategory> GetByName(string name, int id = 0)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<ProductCategory> SaveAsync(ProductCategory category)
         {
             throw new NotImplementedException();

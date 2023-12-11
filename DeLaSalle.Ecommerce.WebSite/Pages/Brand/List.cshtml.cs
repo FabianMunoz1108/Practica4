@@ -15,7 +15,7 @@ namespace DeLaSalle.Ecommerce.WebApplication.Pages.Brand
             _service = service;
             Marcas = new List<BrandDto>();
 
-            _service.UrlAPI = conf.GetValue<string>("UrlApi") +"Brand";
+            _service.UrlAPI = conf.GetValue<string>("UrlApi") + "/Brand";
             _service.Token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiJmbXVub3oiLCJpc3MiOiJXZWJBcGlKd3QuY29tIiwiYXVkIjoibG9jYWxob3N0In0.KEjbLrLdqbHNRCC7fUwYgebxGndQH9bAc67LmopUUXA";
         }
 

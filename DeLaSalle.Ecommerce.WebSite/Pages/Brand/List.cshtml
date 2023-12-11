@@ -9,7 +9,7 @@
             <div class="col-md-4">
                 <br />
                 <button id="btnSearch" class="btn btn-primary mr-3">Búsqueda</button>
-                <a asp-page=".\Edit" class="btn btn-success">Nuevo</a>
+                <a class="btn btn-success" asp-page="/Brand/Edit">Nuevo</a>
             </div>
         </div>
     </form>
@@ -18,7 +18,7 @@
         <div class="col-md-10">
             <table class="table">
                 <tr>
-                    <th>Name</th>
+                    <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Acción</th>
                 </tr>
@@ -28,8 +28,8 @@
                         <td>@cat.Name</td>
                         <td>@cat.Description</td>
                         <td>
-                            <a class="btn btn-primary" asp-page="/Brand/Edit" asp-route-id="@cat.Id">Edit</a>
-                            <a class="btn btn-danger" asp-page="/Brand/Delete" asp-route-id="@cat.Id">Delete</a>
+                            <a class="btn btn-primary" asp-page="/Brand/Edit" asp-route-id="@cat.Id">Editar</a>
+                            <a class="btn btn-danger" asp-page="/Brand/Delete" asp-route-id="@cat.Id">Eliminar</a>
                         </td>
                     </tr>
                 }

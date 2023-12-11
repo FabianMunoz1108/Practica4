@@ -4,10 +4,11 @@ namespace DeLaSalle.Ecommerce.Api.Repositories.Interfaces
 {
     public interface IBrandRepository
     {
-        Task<List<Brand>> GetAllAsync();
-        Task<Brand> GetByIdAsync(int id);
-        Task<bool> DeleteAsync(int id);
         Task<Brand> SaveAsync(Brand brand);
         Task<Brand> UpdateAsync(Brand brand);
+        Task<List<Brand>> GetAllAsync();
+        Task<bool> DeleteAsync(int id);
+        Task<Brand> GetByIdAsync(int id);
+        Task<Brand?> GetByNameAsync(string name, int id);
     }
 }
